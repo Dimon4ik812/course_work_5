@@ -37,21 +37,19 @@ jobs:
           echo "DATABASE_URL=postgres://runner:852123654@localhost/habits" >> $GITHUB_ENV  # Изменено на habits
 
       - name: Create .env file
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.DEBUG }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          REDIS_URL: ${{ secrets.REDIS_URL }}
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CELERY_BROKER_URL: ${{ secrets.CELERY_BROKER_URL }}
-          fail_on_empty: true
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
+          echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
 
       - name: Run makemigrations
         run: |
