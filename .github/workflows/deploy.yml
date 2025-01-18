@@ -51,6 +51,9 @@ jobs:
           echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
           echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
 
+      - name: Display .env file
+        run: cat .env  # Вывод содержимого .env файла для проверки
+
       - name: Run makemigrations
         run: |
           poetry run python manage.py makemigrations
