@@ -2,7 +2,6 @@ name: CI
 
 on: [push, pull_request]
 
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,11 +19,10 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: |
           poetry install --no-root
-
-      
 
       - name: Set up PostgreSQL
         run: |
@@ -32,11 +30,26 @@ jobs:
           sudo apt-get install -y postgresql-client
           sudo service postgresql start
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD '852123654';"
-          sudo -u postgres psql -c "CREATE DATABASE materials;"
+          sudo -u postgres psql -c "CREATE DATABASE habits;"  # Изменено на habits
           sudo -u postgres psql -c "CREATE ROLE runner WITH LOGIN PASSWORD '852123654';"
-          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE materials TO runner;"
+          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE habits TO runner;"  # Изменено на habits
           sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO runner;"
-          echo "DATABASE_URL=postgres://runner:852123654@localhost/materials" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://runner:852123654@localhost/habits" >> $GITHUB_ENV  # Изменено на habits
+
+      - name: Create .env file
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
+          echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> .env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
 
       - name: Run makemigrations
         run: |
@@ -61,8 +74,8 @@ jobs:
 
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
-          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY}}
-          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD}}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
         run: |
           sshpass -p "rBXW2Mn-Bf#,?Z" ssh -v -o StrictHostKeyChecking=no root@85.92.111.109 "set -x; cd /root/-Django-REST-Framework && git pull && ~/.local/bin/poetry install && sudo systemctl restart nginx"
