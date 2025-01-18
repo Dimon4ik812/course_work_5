@@ -22,7 +22,7 @@ poetry install
 4. Тесты:
 
 ```
-python manage.py test
+python manage.py test1
 coverage run --source='.' manage.py test
 coverage report
 тестами покрыто 80%
